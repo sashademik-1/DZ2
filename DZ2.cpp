@@ -66,7 +66,7 @@ void expressiontopolskay(std::string expression, std::vector<std::string> &polsk
                 std::string temp1;
                 std::cin >> temp1;
                 polskay.push_back(temp1);
-                *(it - 1) = '0'; // посмотреть как ведет себя итератор костыыыыыыыыыль
+                *(it - 1) = '0'; 
             }
         } else if (*it == '(') {
             stackofsign.push("(");
