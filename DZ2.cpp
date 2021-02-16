@@ -45,6 +45,7 @@ void expressiontopolskay(std::string expression, std::vector<std::string> &polsk
                 it++;
                 polskay.push_back("e");
             } else if (expression.compare(std::distance(expression.begin(), it), 2, "pi") == 0) {
+                *(it+1)='0';
                 it += 2;
                 polskay.push_back("pi");
             } else if (expression.compare(std::distance(expression.begin(), it), 3, "sin") == 0) {
@@ -66,7 +67,7 @@ void expressiontopolskay(std::string expression, std::vector<std::string> &polsk
                 std::string temp1;
                 std::cin >> temp1;
                 polskay.push_back(temp1);
-                *(it - 1) = '0'; 
+                *(it - 1) = '0';
             }
         } else if (*it == '(') {
             stackofsign.push("(");
@@ -97,8 +98,8 @@ void expressiontopolskay(std::string expression, std::vector<std::string> &polsk
             if (*it == '+') {
                 stackofsign.push("+");
             } else if (*it == '-') {
-                if (!isdigit(*(it - 1)) && (*(it - 1) != ')') && (*(it - 1) != 'e') &&
-                    (expression.compare(std::distance(expression.begin(), it - 2), 2, "pi") != 0)) {
+                if (!isdigit(*(it - 1)) && (*(it - 1) != ')') && (*(it - 1) != 'e')) {
+
                     stackofsign.push("___");
                 } else {
                     stackofsign.push("-");
@@ -155,7 +156,7 @@ void polskaytodouble(std::vector<std::string> polskay, double &i) {
             } else {
                 std::cout << "check expression" << std::endl;
             }
-        } else if (str[0] == '_') {
+        } else if (str == "___") {
             doubl.top() = doubl.top() * (-1);
         } else if (ispunct(str[0])) {
             if (doubl.size() == 1) {
