@@ -1,4 +1,3 @@
-
 #include <iostream>
 #include <array>
 #include <vector>
@@ -85,7 +84,7 @@ void expressiontovector(std::string expression, std::vector<std::pair<int, std::
 
                 it += temp1.size() - temp.size();
 
-                }
+            }
 
         } else if (*it == '(') {
             expr.emplace_back(std::make_pair(3, "("));
@@ -140,12 +139,15 @@ void vectortopolskay(std::vector<std::pair<int, std::string>> &expr, std::vector
                 temp.pop();
             }
             temp.pop();
+        } else if ((it->second == "-") && ((it) == expr.end() - 1)) {
+        } else if ((it->second == "+") && ((it) == expr.end() - 1)) {
         } else if (((it->second == "-") && ((it) == expr.begin())) || (it->second == "-" && (it - 1)->first == 3) ||
                    ((it->second == "-") && (it - 1)->first == 2)) {
             it->first = 4;
             it->second = "_";
             continue;
-        } else if ((it->second == "+" && ((it) == expr.begin())) || (it->second == "+" && (it - 1)->first == 3) ||
+        } else if ((it->second == "+" && ((it) == expr.begin())) || ((it->second == "+") && ((it) == expr.end() - 1)) ||
+                   (it->second == "+" && (it - 1)->first == 3) ||
                    (it->second == "+" && (it - 1)->first == 2)) {
             it->first = 4;
             it->second = "?";
@@ -187,7 +189,17 @@ void polskaytodouble(std::vector<std::string> polskay, double &doubl) {
         if (isdigit(str[0])) {
 
             stack.push(std::stod(str));
+
+        } else if (str == "pi") {
+            stack.push(M_PI);
+        } else if (str == "e") {
+            stack.push(M_E);
         } else if (isalpha(str[0])) {
+            if (stack.empty()) {
+                std::cout << "check chisla" << std::endl;
+                doubl = 0;
+                return;
+            }
             if (str == "sin") {
                 stack.top() = sin(stack.top());
             } else if (str == "tan") {
@@ -196,18 +208,24 @@ void polskaytodouble(std::vector<std::string> polskay, double &doubl) {
                 stack.top() = 1 / tan(stack.top());
             } else if (str == "cos") {
                 stack.top() = cos(stack.top());
-            } else if (str == "pi") {
-                stack.push(M_PI);
-            } else if (str == "e") {
-                stack.push(M_E);
             } else if (str == "sqrt") {
                 stack.top() = sqrt(stack.top());
             } else {
                 std::cout << "check expression" << std::endl;
             }
         } else if (str == "_") {
+            if (stack.empty()) {
+                std::cout << "check chisla" << std::endl;
+                doubl = 0;
+                return;
+            }
             stack.top() = stack.top() * (-1);
         } else if (str == "?") {
+            if (stack.empty()) {
+                std::cout << "check chisla" << std::endl;
+                doubl = 0;
+                return;
+            }
             stack.top() = stack.top() * (1);
         } else if (ispunct(str[0])) {
             if (stack.size() <= 1) {
@@ -261,21 +279,25 @@ int main() {
     if (testforexpression(expression)) {
         std::vector<std::pair<int, std::string>> exp;
         std::vector<std::string> str;
-        while (expression.find("--") != std::string::npos) {
-            expression.replace(expression.find("--"), 2, "+");
-        }
-        while (expression.find("-+") != std::string::npos) {
-            expression.replace(expression.find("-+"), 2, "-");
-        }
-        while (expression.find("+-") != std::string::npos) {
-            expression.replace(expression.find("+-"), 2, "-");
-        }
-        while (expression.find("++") != std::string::npos) {
-            expression.replace(expression.find("++"), 2, "+");
+        while (expression.find("--") != std::string::npos || expression.find("-+") != std::string::npos ||
+               expression.find("+-") != std::string::npos || expression.find("++") != std::string::npos) {
+            while (expression.find("--") != std::string::npos) {
+                expression.replace(expression.find("--"), 2, "+");
+            }
+            while (expression.find("-+") != std::string::npos) {
+                expression.replace(expression.find("-+"), 2, "-");
+            }
+            while (expression.find("+-") != std::string::npos) {
+                expression.replace(expression.find("+-"), 2, "-");
+            }
+            while (expression.find("++") != std::string::npos) {
+                expression.replace(expression.find("++"), 2, "+");
+            }
         }
         while (expression.find(' ') != std::string::npos) {
             expression.erase(expression.find(' '), 1);
         }
+
         expressiontovector(expression, exp);
         if (!exp.empty()) {
             for (unsigned int i = 0; i < exp.size() - 1; i++) {
@@ -286,17 +308,12 @@ int main() {
             }
             std::cout << '\n';
             double i = 0;
-
             vectortopolskay(exp, str);
-
-
             for (std::string str : str) {
                 std::cout << str << " ";
             }
             polskaytodouble(str, i);
             std::cout << '\n';
-
-
             std::cout << i << std::endl;
         }
 
