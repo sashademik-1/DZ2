@@ -5,6 +5,7 @@
 #include <stack>
 #include <iterator>
 #include <cmath>
+#include <stdexcept>
 
 unsigned int prior(char i) {
     switch (i) {
@@ -26,7 +27,7 @@ unsigned int prior(char i) {
 }
 // перваначальная проверка
 
-void expressiontovector(std::string expression, std::vector<std::pair<int, std::string>> &expr) {
+void expressiontovector(std::string &expression, std::vector<std::pair<int, std::string>> &expr) {
     while (expression.find("exp") != std::string::npos) {
         expression.replace(expression.find("exp"), 3, "e^");
     }
@@ -78,12 +79,11 @@ void expressiontovector(std::string expression, std::vector<std::pair<int, std::
                 std::string temp1;
                 std::cin >> temp1;
                 expr.emplace_back(std::make_pair(1, temp1));
+                int b=std::distance(expression.begin(),it);
                 while (expression.find(temp) != std::string::npos) {
                     expression.replace(expression.find(temp), temp.size(), temp1);
                 }
-
-                it += temp1.size() - temp.size();
-
+                it=expression.begin()+(temp1.size() - temp.size())+b;
             }
 
         } else if (*it == '(') {
